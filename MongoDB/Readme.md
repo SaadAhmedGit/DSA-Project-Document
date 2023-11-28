@@ -140,4 +140,4 @@ Here is the file format of BSON:
 12. We pick the next 8 bytes without hesitation since we know the datatype is double and `\x33\x33\x33\x33\x33\x33\x14\x40` means `5.5` in little endian format.
 13. The next field is simply a a 32-bit integer and the rest of the stuff is self explanatory.
 14. Since the next byte is `\x00` this indicates that there is no other item in this array since there's no datatype that has the code 0 assigned to it. This means we can now end this array.
-15. Now we are out of the array scope and back into the object scope (you can maintain these using stacks) and the next there's a null byte which means that there is no field afterwards so this marks the end of an object. Note that a BSON file can contain multiple objects/documents like a BSON of an entire collection.
+15. Now we are out of the array scope and back into the object scope (you can maintain these using stacks) and next, there's a null byte which means that there is no field afterwards so this marks the end of an object. Note that a BSON file can contain multiple objects/documents like a BSON of an entire collection.
