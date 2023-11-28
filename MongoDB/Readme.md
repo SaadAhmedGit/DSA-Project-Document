@@ -120,7 +120,7 @@ Disclaimer: The line breaks are added for explanatory purposes only and there ar
 These bytes are written in the little endian order which is what your computer probably uses by default. Meaning, the first four bytes in our data `\x31\x00\x00\x00` have `\x31` as the least significant byte. We can use Python to see what these mean by one simple line of code.
 
 ```python
-int.from_bytes('\x31\x00\x00\x00'.encode(), byteorder='little')
+int.from_bytes(b'\x31\x00\x00\x00', byteorder='little')
 ```
 which outputs `49`. Most systems use little endian byte ordering by default meaning if you read these 4 bytes into an integer in C++ and print it, you will get 49 without needing to perform any conversion.
 
