@@ -97,7 +97,7 @@ WHERE product.type = 'Shoes'
 RETURN product;
 ```
 
-## MERGE Command:
+## Merge:
 
 The `MERGE` command is utilized to either create a new node with specific properties or locate an existing node based on certain properties. If the node already exists, it will be matched, and if not, a new node will be created. This operation ensures the integrity of the graph by preventing duplicate nodes based on specified properties.
 
