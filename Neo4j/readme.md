@@ -1,11 +1,31 @@
-### Neo4j:
+### Neo4j
 Neo4j is a graph database that uses nodes and edges to represent relationship between different types of data. You can watch the following crash course to understand how it works: [Neo4j-CrashCourse](https://www.youtube.com/watch?v=8jNPelugC2s&t=475s)
 
-In a graph database, each entity type corresponds to a specific node, with each node comprising a set of attributes. These attributes encompasses the inherent properties of the entity. For instance, envision creating an online store with buyers, products, and sellers. In the case of products, their properties would encompass details such as price, type, and availability status. Similarly, the graph database uses a list of edges to define relation between these entities. For example, there would exist multiple edges between a seller and all the product he sells. Just like nodes, each edge has a set of properties assigned to it. In this case, the name of our edge would be 'sells' since the seller sells the product. Then there would be the type of the relation it is, whether it is directional or bidirectional, one to one or many to one and so on. So in this way, Neo4j uses nodes and edges to keep track of entities and relationships within the database.
+In a graph database, each entity type corresponds to a specific node, each node consisting of a set of attributes that represent the inherent properties of the entity. For example, consider creating an online store with buyers, products, and sellers. In the case of products, attributes would include details like price, type, and availability status.
 
-Neo4J, in general, is a collection of various types of graphs. Unlike other databases on the list, it doesn't use a ton of data structures to operate; instead, it utilizes graphs in various ways. So, your focus won't be on creating data structures; it will be on developing functionalities with different variations of graphs. While each of these functionalities can be implemented straightforwardly, you'll need to explore or study algorithms to optimize them. Here, we'll list some of the basic functionalities offered by Neo4j.
+The graph database utilizes edges to define relationships between these entities. For instance, there would be multiple edges between a seller and all the products they sell. Similar to nodes, each edge has properties assigned to it. In this scenario, the edge could be named 'sells' to denote the selling relationship. Additionally, properties specify the type of relation, indicating whether it is directional, bidirectional, one-to-one, or many-to-one.
 
-Create: The job of the create feature is to take information from a CSV (comma separated values) file and use it to create specific type of nodes. The first line in the CSV file tells us how many attributes each node has and what we should call those attributes. After that, each line in the file tells us about the attributes of one node. Imagine we're keeping track of employees in a company. Our CSV might look like this:
+In summary, Neo4j employs nodes and edges to track entities and relationships within the database.
+
+Neo4J, in essence, comprises various types of graphs. Unlike some other databases, it doesn't rely heavily on an abundance of data structures. Instead, it leverages graphs in diverse ways. This means your emphasis shifts from creating intricate data structures to developing functionalities tailored for different graph variations. While implementing these functionalities may be straightforward, achieving optimization often involves exploring or studying algorithms. Here, we'll outline some fundamental functionalities provided by Neo4j. To understand the architecture of Neo4j and explore optimization strategies, refer to the following link: [Neo4j Architecture](https://www.graphable.ai/blog/neo4j-performance/).
+
+
+# Transport Module: Client-Server Communication
+
+The **Transport Module** consists of both the client and server components, facilitating the exchange of queries between them. This module is designed to receive queries from the client and transmit them to the query processor located on the main server. Students are expected to implement this component using socket programming techniques, particularly leveraging Winsock for communication.
+
+# Query Processor: Parsing and Interpretation
+
+The **Query Processor Module** would exist at our main server. It would receive multiple queries from our clients and would parse each of the received queries. Once parsed, the processor signals the execution engine to call the relevant functionality for every query. You are required to just parse the query for this module, no syntax checking or validation for now. To see all of the queries that exist in cypher, you can refer to the following link: [Cypher Queries](https://neo4j.com/docs/cypher-manual/current/introduction/).
+
+# Execution Engine Module
+
+The **Execution Engine Module** is responsible for executing the query plans generated by the query processor. It translates the optimized plans into a sequence of operations to be carried out. The execution engine plays a crucial role in aggregating results and delivering them to the user. Following are the functionalities your exection engine is to support:-
+
+**Note:** All of the example queries would already be parsed once they reach the execution engine.
+
+## Create:
+The job of the create feature is to take information from a CSV (comma-separated values) file and use it to create a specific type of nodes. The first line in the CSV file tells us how many attributes each node has and what we should call those attributes. After that, each line in the file tells us about the attributes of one node. Imagine we're keeping track of employees in a company. Our CSV might look like this:
 
 ```plaintext
 employeeId,Name,Company
@@ -17,7 +37,7 @@ employeeId,Name,Company
 
 Your task is to read this file and create nodes for that particular type, loading the data from the CSV. The user would provide you with the label he is going to give to these type of nodes, e.g in this case the nodes are of employee type, and the path to the csv file from which you should load the nodes.
 
-Merge: Merge would take the label of two type of nodes and the relation that exist between them along with the attribute it exists on the basis of and would add an edge between the two given type of nodes. For example to state that Dhawan plays for India, we can do the following: 
+The CREATE command can also take the labels of two types of nodes and the relationship that exists between them, along with the attribute on which it is based. It will add an edge between the two given types of nodes. For example, to state that Dhawan plays for India, we can use the following:
 
 ```cypher
 CREATE (Dhawan:player{name: "Shikar Dhawan", YOB: 1985, POB: "Delhi"}) 
@@ -25,10 +45,116 @@ CREATE (Ind:Country {name: "India"})
 CREATE (Dhawan)-[r:BATSMAN_OF]->(Ind) 
 ```
 
-As you can see, you can use merge through the create command as well. Now since the graph has been created, we can move onto the functionalities the graph would have.
+As you can see, you can use create command to add edge as well. Now since the graph has been created, we can move onto the functionalities the graph would have.
 
-Property Based Query: This is a basic functionality in Neo4j. When we talk about querying, it simply means asking for information from the graph. It could be about the whole graph, a part of it, a certain type of graph, or a specific node inside it. To make this work, you'll create different versions of a function in your database. These functions will take the type of node as an input and return all nodes of that type across the entire database. For example, if you want to know all the sellers in your store, your database should give you a list of nodes that represent sellers. Importantly, you can also make a query that doesn't specify the type of node. This means you want to see all the data from all types of nodes, essentially everything in the database. This way, you're setting up a system for users to ask different questions about the entities in your database. Additionally, for each type of entity, you'll need a function that prints out its properties.
+## Property Based Query:
 
-Filter Functionality: The filter function involves searching for nodes based on specific attributes. It is designed for each possible property a node might have. This means the user can specify the filter criteria and indicate which property they want to apply it to. For instance, if a user wants to find all the products in our store with prices ranging from 1000 to 10000 Rs, the database would compare the "price" attribute within each product type node against the specified filter. The result would be a list or array of nodes that meet the filter criteria. To achieve this, you need to implement various filter/comparison properties such as less than, equal to, greater than, and others for each type of entity in your database.
+**Property-Based Query** is a fundamental feature in Neo4j, integral to the process of extracting information from the graph. In the context of querying, it involves requesting data about the entire graph, a specific portion, a particular type of graph, or a specific node within it. To implement this functionality, various versions of a function are created in the database. These functions take the type of node as input and return all nodes of that type across the entire database.
 
-Relational Query: You can also conduct queries based on the relationship of an attribute. For instance, if you want your database to retrieve all the types of shoes made by BATA, you'll initiate a filter on sellers to identify the seller named BATA. Subsequently, you'll access BATA's relational attributes and iterate through each type of product it sells. Following this, you'll perform a property-based query on those products and return those that are shoes. This approach allows you to implement relational queries for each type of relation/edge present in your graphs.
+For instance, if you wish to retrieve a list of all sellers in your store, the database should provide a set of nodes representing sellers. Importantly, queries can be constructed without specifying the node type, meaning you can request information about all types of nodes, effectively querying everything in the database. This establishes a flexible system, allowing users to pose diverse questions about the entities within the database.
+
+Additionally, for each type of entity, a corresponding function is required to display its properties.
+
+```cypher
+// This would return all the nodes of 'seller' type
+MATCH (node:Seller)
+RETURN node;
+```
+
+```cypher
+// This would return all the nodes irrespective of their type
+MATCH(node)
+RETURN node;
+```
+
+## Filter Functionality:
+
+**Filter Functionality** is a feature aimed at searching for nodes based on specific attributes within a graph database. This functionality is tailored for every conceivable property that a node might possess. It empowers users to define filter criteria and specify the property to which the filter should be applied. 
+
+For example, if a user intends to identify all products in a store with prices falling within the range of 1000 to 10000 Rs, the database would assess the "price" attribute within each node representing a product type against the defined filter. The outcome would be a curated list or array of nodes that satisfy the specified filter conditions.
+
+To implement this functionality, it is necessary to create diverse filter/comparison properties such as less than, equal to, greater than, and others for each type of entity present in the database.
+
+```cypher
+// Assume 'Product' nodes have a 'price' property
+// Example filter: Retrieve products with prices between 1000 and 10000 Rs
+MATCH (product:Product)
+WHERE product.price >= 1000 AND product.price <= 10000
+RETURN product;
+```
+
+### Relational Query:
+
+**Relational Query** enables you to perform queries based on the relationships between attributes within a graph database. This functionality allows you to retrieve information by navigating through the connections between nodes. 
+
+For instance, if you want to retrieve all the types of shoes manufactured by the seller BATA, you would initiate a filter on sellers to identify the seller named BATA. Subsequently, you would access BATA's relational attributes, iterate through each type of product it sells, and then perform a property-based query on those products to specifically identify and return those that are categorized as shoes. This approach empowers you to implement relational queries for each type of relation/edge present in your graphs.
+
+```cypher
+// Assume 'SELLS' is the relationship between sellers and products
+// Example relational query: Retrieve all types of shoes sold by BATA
+MATCH (seller:Seller {name: 'BATA'})-[:SELLS]->(product:Product)
+WHERE product.type = 'Shoes'
+RETURN product;
+```
+
+## MERGE Command:
+
+The `MERGE` command is utilized to either create a new node with specific properties or locate an existing node based on certain properties. If the node already exists, it will be matched, and if not, a new node will be created. This operation ensures the integrity of the graph by preventing duplicate nodes based on specified properties.
+
+```cypher
+// Example: Create or match a node with a specific property
+MERGE (p:Person {name: 'John Doe'})
+ON CREATE SET p.age = 30, p.city = 'New York'
+ON MATCH SET p.age = 31, p.city = 'San Francisco'
+RETURN p;
+```
+In this example, if a node with the label *Person* and the property name equal to 'John Doe' doesn't exist, it will be created. If the node already exists, its properties will be updated: age will be set to 31, and the city will be set to 'San Francisco'. The **RETURN** statement is optional and is used to retrieve the created or matched node. This query showcases how **MERGE** ensures the existence of a node with the name 'John Doe' while efficiently managing property creation or updates. So technically, **MERGE** is created by combining **CREATE** and **MATCH**.
+
+# Store Engine Module: Data Reading and Writing
+
+The **Store Engine Module** is responsible for reading and writing data to and from the disk. This critical component ensures the persistence of data and facilitates efficient storage and retrieval operations. You are required to make a multi-level file system to serialize/deserialize the graph into and use B-Trees for indexing purposes. The B-Trees themselves can be stored as blob in a binary files for quicker retreival. Additionaly, hashmaps can be used to map the in-memory data onto the disk to reduce search time. Following are the functionalities required for this module:
+
+## Data Reading:
+
+In the data reading phase, the store engine retrieves information stored on the disk, utilizing file access mechanisms to handle various file formats and structures associated with the database.
+
+### File Access
+
+The store engine employs file access mechanisms to read data from disk storage, managing various file formats associated with the database.
+
+### Memory Loading
+
+Once data is read from disk, the store engine loads it into memory for subsequent processing by other modules.
+
+## Data Writing:
+
+The data writing process involves storing new or modified information back to the disk. The store engine ensures the durability of data changes.
+
+### Transaction Log
+
+The store engine maintains a transaction log, recording changes to the database. This log is crucial for recovery in case of system failures.
+
+### Logical Log
+
+In addition to the transaction log, the store engine manages a logical log, capturing high-level operations and providing a historical record of database activities.
+
+## Storage Optimization Strategies:
+
+To enhance the performance of the store engine, developers can employ optimization strategies for data storage and retrieval.
+
+### In-Memory Database Considerations
+
+Configuring the database as an in-memory system can significantly reduce disk I/O expenses, optimizing data access speeds.
+
+### Separate Data and Transaction Logs
+
+Storing data and transaction logs on separate drives helps avoid contention and enhances I/O efficiency for improved performance.
+
+### Binary Storage Format
+
+Neo4j employs a binary storage format for its store files, optimizing data representation for efficient processing.
+
+### File Types
+
+Store files encompass various types, including node stores, relationship stores, and property stores, each serving specific database functions.
+
